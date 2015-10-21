@@ -1,0 +1,714 @@
+body {
+  font: 1em "Lucida Grande", Helvetica, Arial, sans-serif;
+  
+  padding: 0px;
+  margin: 0px;
+  background-image: url(/images/wood_mobil.jpg);
+}
+
+html, body {
+
+  margin: 0px;
+}
+
+a {
+  color: #337575;
+  text-decoration: none;
+}
+
+
+
+#header {
+  padding: 0px;
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  /*border-bottom: 1px solid #333; TODO: irgendiwe wieder rein/*
+
+  /*background: #1C3F3F;*/
+  background-image: url(/images/headerbg.png);
+  z-index: 1;
+
+
+}
+
+#headerBack {
+
+  float:left;
+  padding: 7px 0px 7px 0px;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #D0EEA0 ; 
+  width: 38px;
+  text-align: center;
+  border-right: 2px solid #435050;  
+  cursor:pointer;
+}
+
+.headerBackActive {
+  background-color: #fff;
+}
+
+#headerSiteTitle {
+
+  float:left;
+  padding: 7px 0px 7px 0px;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #D0EEA0 ; 
+  width: 45px;
+  text-align: center;
+}
+
+#headerGameTitle {
+  float:left;
+  width: 135px;
+  padding: 7px 0px 7px 0px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #fff;   
+  border-left: 2px solid #435050;
+  border-right: 2px solid #435050;  
+  text-align: center;
+  cursor:pointer;
+
+}
+
+
+
+.headerGameTitleActive {
+  background-color: #fff;
+  
+  /*border-top: 2px solid #ececec;
+  color: #1C3F3F; */
+
+}
+
+#headerPeople {
+  float: left;
+  width: 45px;
+  text-align: center;
+  border-right: 2px solid #435050; 
+padding: 8px 0px 7px 0px;
+}
+
+#headerPeople img {
+
+  border: 2px solid #435050; 
+
+}
+
+#headerActiveGame{
+  float: left;
+  width: 45px;
+
+  text-align: center;
+  border-right: 2px solid #435050; 
+padding: 8px 0px 7px 0px;
+}
+
+
+
+#menu {
+  display:none;
+  position: absolute;
+  top: 0px;
+  background-color: #fff;
+  border-left: 2px solid #ececec;
+  border-right: 2px solid #ececec;
+  z-index: 10;
+}
+
+#menu ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+
+  
+}
+
+#menu li {
+  padding: 0px;
+  color: #337575;
+  font-weight: bold;
+  font-size: 1.0em;
+  padding: 15px 10px 15px 10px;
+  border-bottom: 2px solid #ececec;
+}
+
+.menuliActive {
+  background-color: #337575;
+  color: #fff !important;
+}
+
+#menu li:first-child {
+  border-top: 2px solid #ececec;
+}
+
+#menu li:hover {
+  cursor:pointer;
+}
+
+#gameview {
+
+  margin: 7px;
+  margin-top: 55px;
+  border: 2px solid #ececec;
+
+  background-color: #fff;
+
+
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px; 
+
+}
+
+h3 {
+  margin: 0px 0px 20px 0px;
+  font-size: 1.1em;
+  color: #fff;
+  background-color: #337575;
+  font-weight: bold
+  
+-webkit-border-top-left-radius: 8px;
+-webkit-border-top-right-radius: 8px;
+-moz-border-radius-topleft: 8px;
+-moz-border-radius-topright: 8px;
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
+
+  padding: 9px 10px 5px 10px;
+}
+
+#roomView h3 {
+  margin: 0px;
+}
+
+
+#footer {
+  
+}
+
+
+
+
+
+
+
+
+
+
+#menu2 {
+  margin-top: 30px;
+  background: rgb(237,237,237);
+  background: -moz-linear-gradient(top, rgba(237,237,237,1) 0%, rgba(255,255,255,1) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,1)), color-stop(100%,rgba(255,255,255,1)));
+  background: -webkit-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(255,255,255,1) 100%);
+  background: -o-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(255,255,255,1) 100%);
+  background: -ms-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(255,255,255,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=0 );
+  background: linear-gradient(top, rgba(237,237,237,1) 0%,rgba(255,255,255,1) 100%);
+}
+
+#menu2 ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+
+  
+}
+
+#menu2 li {
+
+  border-top: 2px solid #ececec;
+  margin: 0px;
+  padding: 12px;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align:center;
+  color: #337575;
+  cursor:pointer;
+
+
+}
+
+#menu2 li:last-child {
+  border-bottom: 2px solid #ececec;
+}
+
+.menu2Highlight {
+  border-top: 2px solid #aaa !important;
+
+  background: -moz-linear-gradient(top, #ededed 0%, #ffffff 100%) !important;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ededed), color-stop(100%,#ffffff)) !important;
+  background: -webkit-linear-gradient(top, #ededed 0%,#ffffff 100%) !important;
+  background: -o-linear-gradient(top, #ededed 0%,#ffffff 100%) !important;
+  background: -ms-linear-gradient(top, #ededed 0%,#ffffff 100%) !important;
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=0 ) !important;
+  background: linear-gradient(top, #ededed 0%,#ffffff 100%) !important;
+}
+
+.menu2HighlightNext {
+  border-top: 2px solid #aaa !important;
+}
+
+
+
+
+
+
+
+
+
+
+#roomlist {
+
+  margin: 12px;  
+}
+
+#roomlisttablediv {
+  overflow: auto;
+
+}
+
+#roomlist table {
+  width: 100%;
+  border-bottom: 2px solid #ccc;
+  border-spacing: 0px;  
+
+  background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+  background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+  background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+  background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 );
+  background: linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+}
+
+#roomlist th {
+  width: 33%;
+  text-align: left;
+  font-size: 0.8em;
+  padding: 5px 5px 5px 5px;
+  border-top: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
+
+  background: #ffffff;
+  background: -moz-linear-gradient(top, #ffffff 0%, #ededed 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#ededed));
+  background: -webkit-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  background: -o-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  background: -ms-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+  background: linear-gradient(top, #ffffff 0%,#ededed 100%);
+}
+
+#roomlist th:nth-child(1) {
+  -moz-border-radius-topleft: 7px;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-bottomright: 0px;
+  -moz-border-radius-bottomleft: 0px;
+  -webkit-border-radius: 7px 0px 0px 0px;
+  border-radius: 7px 0px 0px 0px; 
+  border-left: 2px solid #ccc;
+}
+
+#roomlist th:nth-child(3) {
+  -moz-border-radius-topleft: 0px;
+  -moz-border-radius-topright: 7px;
+  -moz-border-radius-bottomright: 0px;
+  -moz-border-radius-bottomleft: 0px;
+  -webkit-border-radius: 0px 7px 0px 0px;
+  border-radius: 0px 7px 0px 0px;
+  border-right: 2px solid #ccc; 
+}
+
+
+#roomlist td:nth-child(3n) {
+  border-right: 2px solid #ccc;
+}
+
+#roomlist td:nth-child(3n-2) {
+  border-left: 2px solid #ccc;
+}
+
+
+
+
+#roomlist td {
+  width: 25%;
+  text-align: left;
+  font-size: 0.8em;
+  padding: 5px 5px 5px 5px;
+
+}
+
+  
+
+#roomlist td:first-child {
+  width: 50%;
+}
+
+
+#roomlist tr:hover {
+  background: #ffffff;
+  background: -moz-linear-gradient(top, #ffffff 0%, #ededed 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#ededed));
+  background: -webkit-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  background: -o-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  background: -ms-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+  background: linear-gradient(top, #ffffff 0%,#ededed 100%);
+}
+
+
+#quickgameGameCount {
+  width: 230px;
+  margin: 10px auto 10px auto;
+  text-align: center;
+  border: 2px solid #ececec;
+  padding: 8px;
+  font-size: 0.9em;
+  background-image: url(/images/headerbg2.png);
+
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+}
+
+#quickgameStartGame {
+  margin-top: 0px;
+  text-align: center;
+  border-bottom: 2px solid #ececec;
+  padding: 15px;
+  font-size: 1.2em;
+  font-weight: bold;
+
+  color: #337575;
+  cursor:pointer;
+
+  background: #fff;
+  background: -moz-linear-gradient(top, #ffffff 0%, #ededed 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#ededed));
+  background: -webkit-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  background: -o-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  background: -ms-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+  background: linear-gradient(top, #ffffff 0%,#ededed 100%);
+
+
+  
+  
+
+
+}
+
+.form {
+  
+  margin-top: 20px;
+}
+
+.formRow {
+  padding: 20px 0px 20px 0px;
+  border-top: 2px solid #ededed;
+}
+
+.formRow:last-child {
+  border-bottom: 2px solid #ededed;
+}
+
+
+.formLabel {
+  float: left;
+  width: 40%;
+  padding-left: 5px;
+  font-size: 1.0em;
+  font-weight: bold;
+  color: #1C3F3F;
+  text-align: left;
+}
+
+.formValue {
+
+  font-size: 1.0em;
+  font-weight: bold;
+  color: #337575; 
+  text-align: right;
+  padding-right: 10px;
+
+}
+
+.formValue .formSwitchButtons {
+  border-top: 2px solid #ededed;
+  border-bottom: 2px solid #ededed;
+  border-left: 1px solid #ededed;
+  border-right: 1px solid #ededed;
+  padding: 7px 8px 7px 8px;
+  background-color: #fff;
+  color: #337575;
+  cursor:pointer;
+
+  background: -moz-linear-gradient(top, #ffffff 0%, #ededed 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#ededed));
+  background: -webkit-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  background: -o-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  background: -ms-linear-gradient(top, #ffffff 0%,#ededed 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+  background: linear-gradient(top, #ffffff 0%,#ededed 100%);
+  
+}
+
+
+
+.formValue .formSwitchButtons:first-child {
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-bottomright: 0px;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-radius: 10px 0px 0px 10px;
+  border-radius: 10px 0px 0px 10px; 
+  border-left: 2px solid #ededed;
+}
+
+.formValue .formSwitchButtons:last-child {
+  -moz-border-radius-topleft: 0px;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -moz-border-radius-bottomleft: 0px;
+  -webkit-border-radius: 0px 10px 10px 0px;
+  border-radius: 0px 10px 10px 0px;  
+  border-right: 2px solid #ededed;
+
+}
+
+.formValueSwitchButtonsActive {
+  background: #337575 !important;
+  color: #fff  !important;
+}
+
+
+.formTextinput{
+  border: 0px solid #ededed;
+  
+  background-color: rgba(0,0,0,0);
+  font-size: 1.2em;
+  color: #1C3F3F;
+
+  width: 100%;
+
+  background-image: url(/images/forminputreset.png);
+  background-repeat:no-repeat;
+  background-position:right;
+
+}
+
+.formTextinputSearch {
+  background-image: url(/images/forminputsearch.png);
+  background-repeat:no-repeat;
+  background-position:right;
+  color: #ccc;
+}
+
+.forminputdiv {
+   width: 100%;
+}
+
+
+.rowFormTextinput {
+  padding: 7px;
+  border: 2px solid #ededed;
+  margin: 10px;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+
+border-top-radius: 10px;
+
+}
+
+
+
+
+
+.listCtrl {
+  
+ 
+}
+
+.listRow {
+
+  border-top: 2px solid #ececec;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  cursor:pointer;
+}
+
+.listRow:last-child {
+  border-bottom: 2px solid #ececec;
+}
+
+.listRowTitle {
+
+  float: left;
+  color: #1C3F3F;
+
+  padding: 15px 0px 15px 10px; 
+  font-size: 1.2em
+
+}
+
+.listRowColumn1 {
+
+  padding: 5px 20px 5px 0px;
+  text-align: right;
+  font-size: 0.9em;
+  color: #337575;
+  
+}
+
+.listRowColumn2 {
+   padding: 5px 20px 5px 0px;
+  text-align: right;
+  font-size: 0.9em;
+  color: #337575;
+}
+
+.tabs {
+border-bottom: 2px solid #ececec;
+  height: 40px;
+}
+
+.tab {
+  float: left;
+  width: 32%;
+  text-align: center;
+  padding: 0px;
+  border-right: 2px solid #ececec;
+  font-size: 0.9em;
+  font-weight: bold;
+  height: 25px;
+  padding-top: 15px;
+  cursor:pointer;
+  color: #337575;
+  background-color: #fff;
+}
+
+.tabActive {
+  background-color: #337575;
+  color: #fff;
+}
+
+.tab:last-child {
+  border-right: 0px solid #ececec !important;
+}
+
+#roomsview h3 {
+  margin-bottom: 0px;
+
+}
+
+#roomInfo1 {
+  width: 50%;
+  text-align:center;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  float: left;
+  font-size: 0.8em; 
+}
+
+#roomInfo2 {
+  padding-top: 15px;
+  padding-bottom: 10px;
+  text-align:center;
+  font-size: 0.8em; 
+}
+#roomInfo3 {
+  width: 50%;
+  text-align:center;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  float: left;
+  font-size: 0.8em; 
+}
+#roomInfo4 {
+  padding-top: 15px;
+  padding-bottom: 10px;
+  text-align:center; 
+  font-size: 0.8em; 
+}
+
+.roomviewmenu2 {
+  margin-top: 10px !important;
+}
+
+.tabContent .listRow:first-child {
+  border-top: 0px solid #ececec !important;
+}
+
+.tabContent .listRowIcon {
+  float: left;
+  padding: 11px 0px 0px 10px; 
+}
+
+.tabContent .listRowIcon img {
+  border: 2px solid #ececec;
+}
+
+
+.tabContent {
+  display:none;
+}
+
+
+.listCtrlSmall {
+  margin-top: 10px;
+}
+
+.listRowSmall {
+  
+}
+
+.listSmallIcon {
+  float: left;
+  padding: 4px 10px 6px 10px;
+}
+
+
+.listSmallText {
+  padding: 7px 0px 9px 10px;
+  font-size: 0.8em;  
+}
+ 
+.chatTextinput{
+  border: 0px solid #ededed;
+  
+  background-color: rgba(0,0,0,0);
+  font-size: 0.9em;
+  color: #1C3F3F;
+
+  width: 100%;
+
+  background-image: url(/images/sendbtn.png);
+  background-repeat:no-repeat;
+  background-position:right;
+  padding-right: 55px;
+
+}
+
+
+.chatinputdiv {
+   width: 100%;
+}
+
+
+.rowChatTextinput {
+  padding: 7px;
+  border: 2px solid #ededed;
+  margin: 10px;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+
+border-top-radius: 10px;
+
+}
+

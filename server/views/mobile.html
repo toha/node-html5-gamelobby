@@ -1,0 +1,762 @@
+<html> 
+<head> 
+
+<title>Bolzplatz</title> 
+
+   <meta
+     name="viewport"
+     content="width=100%; 
+             initial-scale=1;
+             maximum-scale=1;
+             minimum-scale=1; 
+             user-scalable=no;"
+    />
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script> 
+<script src="nowjs/now.js"></script>
+<script src="javascripts/libs/underscore.js"></script>
+<script src="javascripts/libs/jCanvaScript.js"></script>
+<script src="javascripts/libs/modernizr-1.7.min.js"></script>
+<script src="javascripts/libs/json2.js"></script>
+<script src="javascripts/libs/backbone-min.js"></script>
+<script src="javascripts/libs/ICanHaz.min.js"></script>
+<script src="javascripts/libs/jquery.cookie.js"></script>
+<script src="javascripts/libs/md5.js"></script>
+
+
+
+<script src="javascripts/models.js"></script>
+
+<script src="mobile/javascripts/views/headerview.js"></script>
+<script src="mobile/javascripts/views/footerview.js"></script>
+<script src="mobile/javascripts/views/gameview.js"></script>
+
+
+<script src="games/maumau/javascripts/views/mobil/maumauview.js"></script>
+<script src="games/maumau/javascripts/views/mobil/frontpageview.js"></script>
+<script src="games/maumau/javascripts/views/mobil/quickgameview.js"></script>
+<script src="games/maumau/javascripts/views/mobil/roomsview.js"></script>
+<script src="games/maumau/javascripts/views/mobil/newroomview.js"></script>
+<script src="games/maumau/javascripts/views/mobil/roomview.js"></script>
+
+<link rel="stylesheet" type="text/css" href="mobile/stylesheets/style.css">
+ 
+
+<script>
+
+var app = null;
+var actualMenuView = null;
+var actualGameView = null;
+var roomview = null;	
+
+
+$(document).ready(function(){
+	
+	now.ready(function() { 
+		var headerview = new HeaderView();
+		headerview.firstRender();
+		// Cookie auslesen und einloggen
+		var userid = $.cookie('userid');
+		var accesskey = $.cookie('accesskey');
+		now.logMeIn(userid, accesskey, function(user) {	
+			$("#pageOverlay").hide();		
+			now.me = user;		
+		  var gameview = new GameView();
+			gameview.firstRender();
+
+
+
+var Workspace = Backbone.Router.extend({
+
+  routes: {
+    "games/maumau": "maumau",
+    "games/maumau/quickgame": "quickgame",
+    "games/maumau/rooms": "rooms",
+    "games/maumau/newroom": "newroom",
+    "games/maumau/room/:roomid": "room"
+  },
+
+  maumau: function() {
+    if (actualGameView != null) {
+      actualGameView.remove();
+    }
+    if (actualMenuView == null) {
+      actualMenuView = new MauMauView();
+	    actualMenuView.firstRender();
+    }
+
+
+    actualGameView = new MauMauFrontpageView();	
+	  actualGameView.firstRender();
+
+    window.scrollTo(0, 0);
+  },
+  
+  quickgame: function() {
+    if (actualGameView != null) {
+      actualGameView.remove();
+    }
+    if (actualMenuView == null) {
+      actualMenuView = new MauMauView();
+	    actualMenuView.firstRender();
+
+    }
+    
+    var model = new DummyModel({
+      opponents: "egal",
+      reactiontime: "egal"
+    })
+    actualGameView = new MauMauQuickGameView({
+      model: model
+    });	
+	  actualGameView.firstRender();
+
+    window.scrollTo(0, 0);
+  },
+
+  rooms: function() {
+    if (actualGameView != null) {
+      actualGameView.remove();
+    }
+    if (actualMenuView == null) {
+      actualMenuView = new MauMauView();
+	    actualMenuView.firstRender();
+    }
+
+
+    actualGameView = new RoomsView();	
+	  actualGameView.firstRender();
+
+    window.scrollTo(0, 0);
+
+
+  },
+  newroom: function() {
+    if (actualGameView != null) {
+      actualGameView.remove();
+    }
+    if (actualMenuView == null) {
+      actualMenuView = new MauMauView();
+	    actualMenuView.firstRender();
+    }
+
+    actualGameView = new NewRoomView();	
+	  actualGameView.firstRender();
+
+    window.scrollTo(0, 0);
+  },
+  room: function() {
+    if (actualGameView != null) {
+      actualGameView.remove();
+    }
+    if (actualMenuView == null) {
+      actualMenuView = new MauMauView();
+	    actualMenuView.firstRender();
+    }
+
+    actualGameView = new RoomView();	
+	  actualGameView.firstRender();
+
+    window.scrollTo(0, 0);
+  }
+});
+
+	
+		  app = new Workspace();
+		  Backbone.history.start();	
+		  
+  
+		  
+		  if (user.userroom != null) {
+		  	app.navigate("games/maumau/room/"+user.userroom, true);
+		  }
+			
+		});
+	
+
+  
+  });
+});
+
+
+</script>
+</head> 
+ 
+<body> 
+
+
+<script id="headerTmpl" type="text/html">	
+  <div id="header">
+    <div id="headerBack"><img src="/images/backbtn.png" height="30px" /></div>
+    <div id="headerSiteTitle"><img src="/images/logogame.png" height="30px" /></div>
+    <div id="headerGameTitle"></div>
+    <div id="headerPeople"><img src="/images/people1.png" height="25px" /></div>
+    <div id="headerActiveGame"><img src="/images/notify3.png" height="25px" /></div>
+    <div class="clearer"></div>   
+  </div>
+</script>
+
+<script id="gameviewTmpl" type="text/html">	
+  <div id="gameview">  
+  </div>
+</script>
+
+<script id="maumauFrontpageTmpl" type="text/html">	
+  <div id="roomlist">         
+    <div id="roomlisttablediv">
+      <table id="roomlisttable">
+        <tr>
+          <th>Raum</th>
+          <th>Spieler</th> 
+          <th>Einst.</th>     
+        </tr>
+        <tr>
+          <td>Dasdsads Raum</td>
+          <td>1</td> 
+          <td>läuft</td>      
+        </tr>
+        <tr>
+          <td>Zthgfhfh Raum</td>
+          <td>4</td> 
+          <td>läuft</td>      
+        </tr>
+        <tr>
+          <td>1337 Raum</td>
+          <td>4</td> 
+          <td>läuft</td>      
+        </tr>
+        <tr>
+          <td>Hansmartins Raum</td>
+          <td>3</td> 
+          <td>läuft</td>      
+        </tr>
+        <tr>
+          <td>Was geht ab</td>
+          <td>2</td> 
+          <td>läuft</td>      
+        </tr>
+        <tr>
+          <td>Lorem ipsum</td>
+          <td>2</td> 
+          <td>läuft</td>      
+        </tr>
+        <tr>
+          <td>me et dolore</td>
+          <td>3</td> 
+          <td>läuft</td>      
+        </tr>
+        <tr>
+          <td>et al</td>
+          <td>1</td> 
+          <td>läuft</td>      
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div id="menu2">
+    <ul>
+      <li id="menu2QuickGame">Schnelles Spiel</li>
+      <li id="menu2Stats">Mein Profil</li>
+      <li id="menu2Rooms">Räume</li> 
+
+      <li id="menu2CreateRoom">Neuer Raum</li>      
+
+      <li id="menu2Setup">Einstellungen</li>
+    </ul>
+    <div class="clearer"></div>
+  </div>
+</script>
+
+<script id="maumauMenuTmpl" type="text/html">	
+  <div id="menu">
+    <ul>
+      <li id="frontPageLnk">Start</li>
+      <li id="quickMatchLnk">Sofort spielen</li>
+      <li id="roomsLnk">Räume</li>
+      <li id="createRoomLnk">Neuer Raum</li>            
+      <li id="howtoLnk">Anleitung</li>
+      <li id="highscoreLnk">Highscore</li>
+    </ul>
+    <div class="clearer"></div>
+  </div>
+</script>
+
+
+<script id="quickgameViewTmpl" type="text/html">	
+  <div id="quickgameView">
+    <h3>Schnelles Spiel</h3>
+    <div id="quickgameGameCount">Es wurden <strong>24 Spiele</strong> gefunden.</div>
+
+    <div class="form">
+      <div class="formRow">
+        <div class="formLabel">Gegenspieler</div>
+        <div class="formValue opponentcount">
+          <span class="formSwitchButtons formValueSwitchButtonsActive">egal</span><span class="formSwitchButtons">1</span><span class="formSwitchButtons">2</span><span class="formSwitchButtons">3</span>
+
+        </div>
+        <div class="clearer"></div>
+      </div>
+      <div class="formRow">
+        <div class="formLabel">Reaktionszeit</div>
+        <div class="formValue reactiontime">
+          <span class="formSwitchButtons formValueSwitchButtonsActive">egal</span><span class="formSwitchButtons">15</span><span class="formSwitchButtons">30</span><span class="formSwitchButtons">60</span>
+
+        </div>
+        <div class="clearer"></div>
+      </div>
+
+      <div class="formRow">
+        <div class="formLabel">Kartendeck</div>
+        <div class="formValue reactiontime">
+          <span class="formSwitchButtons formValueSwitchButtonsActive">egal</span><span class="formSwitchButtons">32er</span><span class="formSwitchButtons">52er</span>
+
+        </div>
+        <div class="clearer"></div>
+      </div>
+
+
+    </div>
+
+
+    <div id="quickgameStartGame">Jetzt Spielen</div>
+    
+  </div>
+</script>
+
+
+<script id="roomsTmpl" type="text/html">	
+  <div id="roomsview"> 
+    <h3>Räume</h3>
+
+    <div id="rooms_list">
+
+      <div class="listCtrl">
+
+      <div class="listRow rowFormTextinput">
+        <div class="forminputdiv">
+          <input type="text" class="formTextinput formTextinputSearch" value="Nach Raum/Spieler suchen" />
+        </div>
+        
+      </div>
+
+        <div class="listRow">
+
+
+          <div class="listRowTitle">Tobis Room</div>
+          <div class="listRowColumn1">3 Spieler</div>
+          <div class="listRowColumn2">Zeit: 30 sek.</div>
+          <div class="clearer"></div>
+
+        </div>
+
+        <div class="listRow">
+
+          <div class="listRowTitle">Test Room</div>
+          <div class="listRowColumn1">2 Spieler</div>
+          <div class="listRowColumn2">Zeit: 60 sek.</div>
+          <div class="clearer"></div>
+
+        </div>
+
+        <div class="listRow">
+
+          <div class="listRowTitle">Dasds ada </div>
+          <div class="listRowColumn1">4 Spieler</div>
+          <div class="listRowColumn2">Zeit: 15 sek.</div>
+          <div class="clearer"></div>
+
+        </div>
+
+        <div class="listRow">
+
+          <div class="listRowTitle">Lorem ipsum</div>
+          <div class="listRowColumn1">2 Spieler</div>
+          <div class="listRowColumn2">Zeit: 15 sek.</div>
+          <div class="clearer"></div>
+
+        </div>
+
+        <div class="listRow">
+
+          <div class="listRowTitle">Werder Bremen</div>
+          <div class="listRowColumn1">3 Spieler</div>
+          <div class="listRowColumn2">egal</div>
+          <div class="clearer"></div>
+
+        </div>
+
+        <div class="listRow">
+
+          <div class="listRowTitle">Arnautovic Fanclub</div>
+          <div class="listRowColumn1">3 Spieler</div>
+          <div class="listRowColumn2">Zeit: 30 sek.</div>
+          <div class="clearer"></div>
+
+        </div>
+
+        <div class="listRow">
+
+          <div class="listRowTitle">Tobis Room</div>
+          <div class="listRowColumn1">1 Spieler</div>
+          <div class="listRowColumn2">Zeit: 30 sek.</div>
+          <div class="clearer"></div>
+
+        </div>
+
+        <div class="listRow">
+
+          <div class="listRowTitle">Tobis Room</div>
+          <div class="listRowColumn1">4 Spieler</div>
+          <div class="listRowColumn2">Zeit: 60 sek.</div>
+          <div class="clearer"></div>
+
+        </div>
+
+        <div class="listRow">
+
+          <div class="listRowTitle">Tobis Room</div>
+          <div class="listRowColumn1">2 Spieler</div>
+          <div class="listRowColumn2">egal</div>
+          <div class="clearer"></div>
+
+        </div>
+
+        <div class="listRow">
+
+          <div class="listRowTitle">Tobis Room</div>
+          <div class="listRowColumn1">2 Spieler</div>
+          <div class="listRowColumn2">Zeit: 30 sek.</div>
+          <div class="clearer"></div>
+
+        </div>
+    
+      </div>
+
+    </div>     
+
+  </div>
+</script>
+
+
+<script id="newroomTmpl" type="text/html">	
+  <div id="newroomview"> 
+    <h3>Neuer Raum</h3>
+
+    <div class="form">
+      <div class="formRow rowFormTextinput">
+        <div class="forminputdiv">
+          <input type="text" class="formTextinput roomNameValue" value="" maxlength="20" />
+        </div>
+        
+      </div>
+			<div class="formRow">
+        <div class="formLabel">Max. Spieler</div>
+        <div class="formValue opponentcount">
+        <span class="formSwitchButtons formValueSwitchButtonsActive">2</span><span class="formSwitchButtons">3</span><span class="formSwitchButtons">4</span><span class="formSwitchButtons">5</span>
+
+        </div>
+        <div class="clearer"></div>
+      </div>
+      <div class="formRow">
+        <div class="formLabel">Reaktionszeit</div>
+        <div class="formValue reactiontime">
+          <span class="formSwitchButtons">15</span><span class="formSwitchButtons formValueSwitchButtonsActive">30</span><span class="formSwitchButtons">60</span>
+
+        </div>
+        <div class="clearer"></div>
+      </div>
+      <div class="formRow">
+        <div class="formLabel">Kartendeck</div>
+        <div class="formValue decktype">
+          <span class="formSwitchButtons formValueSwitchButtonsActive">32er</span><span class="formSwitchButtons">52er</span>
+
+        </div>
+        <div class="clearer"></div>
+      </div>
+
+
+    </div>
+
+    <div id="quickgameStartGame" class="formButton">Raum erstellen</div>       
+
+  </div>
+</script>
+
+<script id="roomTmpl" type="text/html">	
+  <div id="roomView"> 
+    <h3>Raumname</h3>
+    <div class="tabs">
+
+       <div class="tab tabOverview">Übersicht</div>   
+       <div class="tab tabPlayer">Spieler</div>   
+       <div class="tab tabChat">Chat</div>   
+       
+  
+    </div>
+    <div class="clearer"></div>
+
+    <div class="tabContent">
+
+      <div id="roomInfo1"><strong>2/3</strong> Spieler</div>
+      <div id="roomInfo2"><strong>32er</strong> Deck</div>
+      <div id="roomInfo3"><strong>15sek</strong> Reaktionszeit</div>
+      <div id="roomInfo4"><strong>Warte auf Spieler</strong></div>
+
+
+      <div id="menu2" class="roomviewmenu2">
+        <ul>
+          <li id="menu2QuickGame">Spiel starten</li>
+          <li id="menu2Rooms">Freunde einladen</li> 
+          <li id="roommenuLeave">Raum verlassen</li>
+        </ul>
+        <div class="clearer"></div>
+      </div>
+
+    </div>
+
+    <div class="tabContent">
+
+      <div class="listCtrl">
+        <div class="listRow">
+          <div class="listRowIcon"><img src="/images/people1.png" height="25px" /></div>
+          <div class="listRowTitle">Tobi</div>
+          <div class="listRowColumn1">1400 Punkte</div>
+          <div class="listRowColumn2">2. Rang</div>
+          <div class="clearer"></div>
+        </div>
+
+        <div class="listRow">
+          <div class="listRowIcon"><img src="/images/people1.png" height="25px" /></div>
+          <div class="listRowTitle">Hans-Peter</div>
+          <div class="listRowColumn1">1336 Punkte</div>
+          <div class="listRowColumn2">54. Rang</div>
+          <div class="clearer"></div>
+        </div>
+
+        <div class="listRow">
+          <div class="listRowIcon"><img src="/images/people1.png" height="25px" /></div>
+          <div class="listRowTitle">Hein Doof</div>
+          <div class="listRowColumn1">1336 Punkte</div>
+          <div class="listRowColumn2">54. Rang</div>
+          <div class="clearer"></div>
+        </div>
+
+        <div class="listRow">
+          <div class="listRowIcon"><img src="/images/people1.png" height="25px" /></div>
+          <div class="listRowTitle">Mickey Maus</div>
+          <div class="listRowColumn1">1336 Punkte</div>
+          <div class="listRowColumn2">54. Rang</div>
+          <div class="clearer"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="tabContent">
+
+      <div class="listCtrlSmall">
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so ab, langer text, noch länger und noch länger?</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so ab, langer text, noch länger und noch länger?</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was gehanger text, noch länger und noch länger?</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dilänger?</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir sr?</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+  
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+  
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+  
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+  
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+  
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+  
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+  
+        <div class="listRowSmall">
+
+          <div class="listSmallIcon"><img src="/images/people1.png" height="20px" /></div>
+          <div class="listSmallText"><strong>Tobi</strong>(18:24): Hi, was geht bei dir so</div>
+
+        </div>
+        <div class="clearer"></div>
+  
+      </div>
+
+      <div class="rowChatTextinput">
+        <div class="chatinputdiv">
+          <input type="text" class="chatTextinput" value="" />
+        </div>
+        
+      </div>      
+
+    </div>
+
+
+</script>
+<!--  
+
+  <div id="footer"></div>-->
+
+    <!--<div id="content">
+
+      <div class="contentpage contentFrontpage">
+        <a href="javascript:bla();">blaa</a>
+        <div id="canvastest">
+          
+        </div>
+
+        <h3>roomlist</h3>
+        <div id="roomlist">
+          
+          <div id="roomlisttablediv">
+            <table id="roomlisttable">
+              <tr>
+                <th>name</th>
+                <th>player</th> 
+                <th>status</th>
+                <th>config</th>       
+              </tr>
+            </table>
+          </div>
+
+        </div>
+      
+
+
+      </div>
+
+
+
+    </div>-->
+</body> 
+</html> 

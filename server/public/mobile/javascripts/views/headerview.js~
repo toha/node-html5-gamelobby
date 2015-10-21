@@ -1,0 +1,35 @@
+var HeaderView = Backbone.View.extend({
+    events: {
+        "click #headerBack": "goBack",
+        "mousedown #headerBack": "markHeaderBack"
+    },
+    initialize: function() {
+
+    },
+    render: function() {   
+
+        return this;
+    },
+    firstRender: function() {
+        var self = this;
+        
+        $(this.el).html(ich.headerTmpl());
+        $("body").append(this.el);
+        
+        return this;
+    },
+    goBack: function() {
+      window.history.back()
+    },
+    markHeaderBack: function() {
+      $("img", "#headerBack")[0].src = "/images/backbtn2.png";
+      $("#headerBack").addClass("headerBackActive");
+
+      setTimeout( function() {
+        $("img", "#headerBack")[0].src = "/images/backbtn.png";
+        $("#headerBack").removeClass("headerBackActive");		    
+	    }, 250 );
+
+    }
+
+});

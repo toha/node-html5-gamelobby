@@ -1,0 +1,83 @@
+var MauMauView = Backbone.View.extend({
+    events: {
+
+    },
+    initialize: function() {
+      _.bindAll(this, "render");
+    },
+    render: function() {   
+
+        return this;
+    },
+    firstRender: function() {
+        var self = this;
+        
+        var menu = ich.maumauMenuTmpl();
+        $("#header").append(menu);
+
+        $("#headerGameTitle").html('<img src="/images/logo1.png" height="30px" /><img src="/images/logo2.png" height="30px" style="display:none" />');
+        $("#headerGameTitle").click(function() {
+          if ($("#headerGameTitle").hasClass("headerGameTitleActive")) {
+            $("#headerGameTitle").removeClass("headerGameTitleActive");
+            $("img", "#headerGameTitle").eq(1).hide();
+            $("img", "#headerGameTitle").eq(0).show();
+          }
+          else {
+
+            $("img", "#headerGameTitle").eq(0).hide();
+            $("img", "#headerGameTitle").eq(1).show();
+            $("#headerGameTitle").addClass("headerGameTitleActive");
+          }
+          
+          // calc menu position
+          var offset = $("#headerGameTitle").offset();
+          var h = $("#headerGameTitle").innerHeight();
+          var w = $("#headerGameTitle").innerWidth();
+
+          $("#menu").css("top", h);
+          $("#menu").css("left", offset.left+2);
+          $("ul", "#menu").css("width", w-4);
+          $("#menu").toggle();
+        });
+
+        $("#quickMatchLnk", menu).click(function() {
+          self.navigate(self, this, "games/maumau/quickgame");
+        });
+
+        $("#frontPageLnk", menu).click(function() {
+          self.navigate(self, this, "games/maumau");
+        });
+
+        $("#roomsLnk", menu).click(function() {
+          self.navigate(self, this, "games/maumau/rooms");
+        });
+
+        $("#createRoomLnk", menu).click(function() {
+          self.navigate(self, this, "games/maumau/newroom");
+        });
+
+
+				now.navigateUser = function(url) {
+					app.navigate(url, true);
+				};
+				
+        
+        
+        
+        
+        return self;
+    },
+
+    navigate: function(view, element, url) {
+      $("li", "#menu").removeClass("menuliActive");
+      $(element).addClass("menuliActive");
+      
+      $("img", "#headerGameTitle").eq(1).hide();
+      $("img", "#headerGameTitle").eq(0).show();  
+      $("#headerGameTitle").removeClass("headerGameTitleActive");
+      $("#menu").toggle();
+
+      app.navigate(url, true);  
+      
+    }
+});

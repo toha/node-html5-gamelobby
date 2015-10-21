@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+<title>MauMau</title>
+
+   <meta
+     name="viewport"
+     content="width=100%; 
+             initial-scale=1;
+             maximum-scale=1;
+             minimum-scale=1; 
+             user-scalable=no;"
+    />
+
+
+ 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script> 
+<script src="nowjs/now.js"></script>
+<script src="javascripts/libs/underscore.js"></script>
+<script src="javascripts/libs/jCanvaScript.js"></script>
+
+<script src="javascripts/libs/modernizr-1.7.min.js"></script>
+<script src="javascripts/libs/json2.js"></script>
+<script src="javascripts/libs/backbone-min.js"></script>
+<script src="javascripts/libs/ICanHaz.min.js"></script>
+<script src="javascripts/libs/jquery.cookie.js"></script>
+<script src="javascripts/libs/md5.js"></script>
+
+<script src="javascripts/models.js"></script>
+
+<script src="desk/javascripts/views/headerview.js"></script>
+<script src="desk/javascripts/views/footerview.js"></script>
+<script src="desk/javascripts/views/gameview.js"></script>
+
+<script src="games/maumau/javascripts/views/desk/maumauview.js"></script>
+<script src="games/maumau/javascripts/views/desk/frontpageview.js"></script>
+<script src="games/maumau/javascripts/views/desk/quickgameview.js"></script>
+<script src="games/maumau/javascripts/views/desk/roomview.js"></script>
+<script src="games/maumau/javascripts/views/desk/newroomview.js"></script>
+<script src="games/maumau/javascripts/views/desk/canvasview.js"></script>
+
+<link rel="stylesheet" type="text/css" href="desk/stylesheets/style.css">
+
+<script>
+
+
+var app = null;
+var actualMenuView = null;
+var actualGameView = null;
+var roomview = null;	
+var newRoomView = null;
+var quickGameView = null;
+
+
+$(document).ready(function(){
+	
+	now.ready(function() { 
+		var headerview = new HeaderView();
+		headerview.firstRender();
+		// Cookie auslesen und einloggen
+		var userid = $.cookie('userid');
+		var accesskey = $.cookie('accesskey');
+		now.logMeIn(userid, accesskey, function(user) {	
+			$("#pageOverlay").hide();		
+			now.me = user;		
+		  var gameview = new GameView();
+			gameview.firstRender();
+
+			now.core.socketio.on("disconnect", function() {
+				
+				// Alles erst nach einer Sekunde damit bei reload nicht der Dialog kommt
+				setTimeout(function() {
+					
+					$("#pageOverlay").show();		
+					var top = ($(window).height() /2) - ($("#pageOverlayDialog").innerHeight()/2);
+					var left = ($(window).width() /2) - ($("#pageOverlayDialog").innerWidth()/2);
+					
+					$("#pageOverlayDialog").css("top", top);
+					$("#pageOverlayDialog").css("left", left);
+					
+					if ($("#pageOverlayOne").css("display") == "block") {
+						$("#pageOverlayBtnReconnect").click(function() {
+							location.reload();
+						});
+						setInterval(function() {
+							var c = $("strong", "#pageOverlayOne").text();
+							if (c <= 0) {
+								location.reload();
+							}
+							else {
+								c -= 1;
+								$("strong", "#pageOverlayOne").text(c);
+							}
+							
+						}, 1000);
+					}					
+					
+				}, 500);
+				
+
+			});
+			
+
+
+
+	
+			var Workspace = Backbone.Router.extend({
+			
+			  routes: {
+			    "games/maumau": "maumau",
+			    "games/maumau/room/:roomid": "room",
+			    "games/maumau/game/:gameid": "game"
+			  },
+			
+			  maumau: function() {
+			    $("li", "#menu").removeClass("menuliActive");
+			    if (actualGameView != null) {
+			      actualGameView.remove();
+			      
+			    }
+			    console.log(5);
+			    $(".popupview").hide();
+			    
+			    if (roomview != null) {
+			    	roomview.hideRoomView();
+			    }			    
+			    
+			    if (actualMenuView == null) {
+			      actualMenuView = new MauMauView();
+				    actualMenuView.firstRender();
+			    }
+			
+			
+			    actualGameView = new MauMauFrontpageView();	
+				  actualGameView.firstRender();
+			  },
+			  room: function(roomid) {
+			    $("li", "#menu").removeClass("menuliActive");
+			    if (actualGameView != null) {
+			    	
+		    		actualGameView.remove();
+
+			    }
+			    
+			    $(".popupview").hide();
+			    
+			    if (actualMenuView == null) {
+			      actualMenuView = new MauMauView();
+				    actualMenuView.firstRender();
+			    }
+			    
+			    if (roomview != null) {
+			    	roomview.showRoomView();
+			    }
+			    else {						
+				    roomview = new RoomView();	
+					  roomview.firstRender(roomid);
+					}					    
+		
+
+			
+			  },
+			  game: function(gameid) {
+			    $("li", "#menu").removeClass("menuliActive");
+			    if (actualGameView != null) {
+			      actualGameView.remove();
+			      
+			    }
+			    
+			    $(".popupview").hide();
+			    
+			    if (roomview != null) {
+			    	roomview.hideRoomView();
+			    }
+			    
+			    if (actualMenuView == null) {
+			      actualMenuView = new MauMauView();
+				    actualMenuView.firstRender();
+			    }
+			
+			
+			    actualGameView = new CanvasView();	
+				  actualGameView.firstRender(gameid);
+			
+			  }
+			
+			
+			});
+	
+	
+
+	
+		  app = new Workspace();
+		  Backbone.history.start();	
+		  
+
+      var newRoomView = new NewRoomView();	
+	    newRoomView.firstRender();					  
+		  
+			var quickGameView = new MauMauQuickGameView();	
+	    quickGameView.firstRender();		  
+		  
+		  if (user.userroom != null) {
+		  	app.navigate("games/maumau/room/"+user.userroom, true);
+		  }
+			
+		});
+	
+
+  
+  });
+});
+</script>
+</head> 
+ 
+<body> 
+
+
+<script id="headerTmpl" type="text/html">	
+	<div id="headerUserViewExtended">
+		
+		
+		
+		<div id="headerUserOptionsLeft">
+			<h3>Blub</h3>
+			<div id="headerUserOptionsLeftPhoto">
+				<img src="/images/people1.png" alt="userimgbig" width="100px"/>
+			</div>
+			<div id="headerUserOptionsLeftBottom">Avatar ändern
+				<form action="/avatar" name="fo" enctype="multipart/form-data" id="headerUserChangeAvatarForm" method="post">
+					<input type="hidden" id="headerUserChangeAvatarHiddenRef" name="ref" />	
+					<input type="file" id="headerUserChangeAvatar" name="f" size="2" />	
+				</form>			
+			</div>
+			
+		</div>
+		
+		<div id="headerUserOptionsRight">
+			
+			<div class="headerUserMenu">
+				<div class="headerUserMenuElement" id="headerUserChangeUserNameLnk">Benutzernamen festlegen</div>
+				<div class="headerUserMenuSubEl">
+					<h4>Benutzernamen festlegen</h4>
+					<p>Du kannst deinen Benutzernamen nur <strong>ein Mal</strong> ändern!</p>
+					
+					<input type="text" id="headerUserNameValue" value="" maxlength="20" />
+					
+					<div class="headerUserFormButtonRowUser headerUserFormBtnRow">
+						<div>Abbrechen</div><div>Speichern</div>
+					</div>
+				</div>
+				<div class="headerUserMenuElement" id="headerUserChangePWLnk">Passwort festlegen</div>
+				<div class="headerUserMenuSubEl">
+					<h4>Passwort festlegen</h4>
+					<p>Ein Passwort brauchst du nur, wenn du auf mehreren Computern oder Smartphones spielen willst.</p>
+					
+					<input type="password" id="headerUserNewPassword" value="" maxlength="20" />
+					
+					<div class="headerUserFormButtonRowPw headerUserFormBtnRow">
+						<div>Abbrechen</div><div>Speichern</div>
+					</div>
+				</div>	
+				
+				<div class="headerUserMenuElement" id="headerUserChangePWChangeLnk">Passwort ändern</div>
+				<div class="headerUserMenuSubEl">
+					<h4>Passwort ändern</h4>
+					
+					<input type="text" id="headerUserChangePassword" class="headerUserChangePasswordInactive" value="Aktuelles Passwort" title="Aktuelles Passwort" maxlength="20" />
+					<input type="text" id="headerUserChangePassword2" class="headerUserChangePasswordInactive" value="Neues Passwort" title="Neues Passwort" maxlength="20" />
+					
+					<div class="headerUserFormButtonRowChangePw headerUserFormBtnRow">
+						<div>Abbrechen</div><div>Speichern</div>
+					</div>
+				</div>								
+				<div class="headerUserMenuElement" id="headerUserSoundEl">
+					Sound
+					<span class="formSwitchButtons formValueSwitchButtonsActive">an</span><span class="formSwitchButtons">aus</span>
+				</div>
+				<div class="headerUserMenuElement" id="headerUserChangeAccLnk">Account wechseln</div>
+				<div class="headerUserMenuSubEl">
+					<h4>Account wechseln</h4>
+					
+					<input type="text" id="headerUserChangeAccUsername"  value="Benutzername" title="Benutzername" maxlength="20" />
+					<input type="text" id="headerUserChangeAccPw" class="headerUserChangePasswordInactive" value="Passwort" title="Passwort" maxlength="20" />
+					
+					<div class="headerUserFormButtonRowChangeAcc headerUserFormBtnRow">
+						<div>Abbrechen</div><div>Speichern</div>
+					</div>
+				</div>	
+				<div class="headerUserMenuElement" id="headerUserLogoutLnk" >Logout</div>			
+			</div>
+		</div>
+		<div class="clearer"></div>
+	</div>
+	
+  <div id="header">
+    <div id="logo"><h1>xy Games<h1></div>
+   	<div id="headerRightMenu">
+   		
+
+  		
+	   	<div id="headerRoom">
+	   		<img src="/images/notify4.png" height="25px" />
+	   		<img src="/images/iconroom.png" height="25px" />
+	   		<div class="headerRoomName"></div>
+	   		<span class="headerRoomId"></span>
+	   	</div>  
+	   	
+	   	<div id="headerPeople">
+	   		<img src="/images/people1.png" height="25px" />
+	   		<div class="headerUserName"></div>
+				
+	   	</div>  
+	   	<div class="clearer"></div>  	
+	   	
+   		   	
+   	</div> 
+    	 
+  </div>
+  <div id="pageOverlay">
+  	
+	  	<div id="pageOverlayDialog">
+	  		<div id="pageOverlayOne">
+		  		<h3>Verbindung Unterbrochen</h3>
+		  		<p>Die Verbindung zum Server wurde unterbrochen. Es wird versucht die Verbindung wieder herzustellen.</p>
+		  		<div class="pageOverlayBtnRow">
+		  			<div>Verbinden in <strong>10</strong> Sekunden...</div>
+		  			<div class="pageOverlayBtn" id="pageOverlayBtnReconnect">Jetzt Verbinden</div>
+		  		</div>
+	  		</div>
+	  		<div id="pageOverlayTwo">
+		  		<h3>Verbindung Unterbrochen</h3>
+		  		<p>Die Verbindung wurde getrennt, weil du dich in einem anderen Fenster angemeldet hast. Du kannst dieses Fenster nun schließen.</p>
+	  		</div>	  		
+	  	</div>
+  	
+  	
+  	
+  </div>
+  
+</script>
+
+<script id="topAdTmpl" type="text/html">
+  <div id="errorMsg">
+  	<div id="errorMsgIcon"><img src="/images/warning.png" /></div>
+  </div>
+  <div id="fakeHeader">&nbsp;</div>	
+  
+  <div id="advertismentTop"><img src="http://dummyimage.com/728x89/ccc/fff.png&text=Ad" /></div>	
+</script>
+
+
+<script id="gameviewTmpl" type="text/html">
+  
+  <div id="gameview">   
+  </div>
+</script>
+
+<script id="maumauView" type="text/html">	
+ <div id="headline"><h2>MauMau</h2></div>
+    <div id="menu">
+      <ul>
+        <li id="frontPageLnk">Lobby</li>
+        <li id="createRoomLnk">Raum Erstellen</li>      
+        <li id="quickMatchLnk">Sofort Spielen</li>
+        <li id="howtoLnk">Anleitung</li>
+        <li id="highscoreLnk">Highscore</li>
+      </ul>
+    </div>
+    <div class="clearer"></div>  
+        
+    <div id="content">
+
+
+      
+
+
+      
+
+
+    </div>
+</script>
+
+<script id="maumauFrontpageTmpl" type="text/html">	
+<div id="frontpageView">
+  <div id="frontpageDevices">
+  	
+  	<div id="frontpageDeviceImg">
+  		<img src="http://dummyimage.com/500x250/ccc/fff.png&text=Mobile Devices" />
+  	</div>
+  	<div id="frontpageSocial"></div>
+  	
+  </div>
+  <div id="frontpageRoomlist">
+  	  <h3>Räume</h3>
+	  <div class="listCtrl">
+      <div class="listRow rowFormTextinput">
+        <div class="forminputdiv">
+          <input type="text" class="formTextinput formTextinputSearch" title="Nach Raum/Spieler suchen" value="Nach Raum/Spieler suchen"  maxlength="50" />
+        </div>
+        
+      </div>	  	
+	  	
+  	    	    	    	    	    	       
+    
+	    	    	    	    	    	    	    	    	    	    	    
+	  </div>  	
+
+  </div>
+  <div class="clearer"></div>
+
+  <div id="canvastest">
+    
+  </div>
+
+  <!--<h3>roomlist</h3>
+  <div id="roomlist">
+    
+    <div id="roomlisttablediv">
+      <table id="roomlisttable">
+        <tr>
+          <th>name</th>
+          <th>player</th> 
+          <th>status</th>
+          <th>config</th>       
+        </tr>
+      </table>
+    </div>
+
+  </div>
+</div>-->
+</script>
+
+<script id="roomListRowTmpl" type="text/html">	
+	<div class="listRow">
+		<div class="listRowId">{{ id }}</div>
+	  <div class="listRowTitle">{{ name }}</div>
+	  <div class="listRowColumn1">{{ playerCount }}/{{ maxPlayers }} Spieler</div>
+	  <div class="listRowColumn2">{{ deckType }}er Deck, {{ reactionTime }}sek. Zeit</div>
+	  
+
+	</div>
+</script>
+
+<script id="quickgameViewTmpl" type="text/html">	
+  <div id="quickgameView" class="popupview">
+		<div id="quickGameViewOptions">
+	    <div id="quickgameGameCount"><img src="/images/load.gif" height="20px" alt="waiting"/></div>
+	
+	    <div class="form">
+	      <div class="formRow">
+	        <div class="formLabel">Gegner (mind.)</div>
+	        <div class="formValue quickopponentcount">
+	          <span class="formSwitchButtons formValueSwitchButtonsActive">egal</span><span class="formSwitchButtons">1</span><span class="formSwitchButtons">2</span><span class="formSwitchButtons">3</span>
+	
+	        </div>
+	        <div class="clearer"></div>
+	      </div>
+	      <div class="formRow">
+	        <div class="formLabel">Reaktionszeit</div>
+	        <div class="formValue quickreactiontime">
+	          <span class="formSwitchButtons formValueSwitchButtonsActive">egal</span><span class="formSwitchButtons">15</span><span class="formSwitchButtons">30</span><span class="formSwitchButtons">60</span>
+	
+	        </div>
+	        <div class="clearer"></div>
+	      </div>
+	      <div class="formRow">
+	        <div class="formLabel">Kartendeck</div>
+	        <div class="formValue quickdecktype">
+	          <span class="formSwitchButtons formValueSwitchButtonsActive">egal</span><span class="formSwitchButtons">32er</span><span class="formSwitchButtons">52er</span>
+	
+	        </div>
+	        <div class="clearer"></div>
+	      </div>      
+	    </div>
+	    
+	
+	    <div class="formButton">Jetzt Spielen</div>
+    </div>
+    <div id="quickGameViewResult">
+    	<img src="/images/load.gif" alt="waiting"/>
+    	<p><strong>Suche Spiel</strong></p>
+    	<p><span>1</span>. Versuch</p>
+    	<p class="quickGameViewCancel">Abbrechen</p>
+    </div>
+    
+  </div>
+</script>
+<script id="newroomTmpl" type="text/html">	
+  <div id="newroomview" class="popupview"> 
+    <div class="form">
+      <div class="formRow rowFormTextinput">
+        <div class="forminputdiv">
+          <input type="text" class="formTextinput roomNameValue" value="" maxlength="20" />
+        </div>
+        
+      </div>
+      <div class="formRow">
+        <div class="formLabel">Max. Spieler</div>
+        <div class="formValue opponentcount">
+        <span class="formSwitchButtons formValueSwitchButtonsActive">2</span><span class="formSwitchButtons">3</span><span class="formSwitchButtons">4</span><span class="formSwitchButtons">5</span>
+
+        </div>
+        <div class="clearer"></div>
+      </div>
+      <div class="formRow">
+        <div class="formLabel">Reaktionszeit</div>
+        <div class="formValue reactiontime">
+          <span class="formSwitchButtons">15</span><span class="formSwitchButtons formValueSwitchButtonsActive">30</span><span class="formSwitchButtons">60</span>
+
+        </div>
+        <div class="clearer"></div>
+      </div>
+      <div class="formRow">
+        <div class="formLabel">Kartendeck</div>
+        <div class="formValue decktype">
+          <span class="formSwitchButtons formValueSwitchButtonsActive">32er</span><span class="formSwitchButtons">52er</span>
+
+        </div>
+        <div class="clearer"></div>
+      </div>
+
+
+    </div>
+
+    <div class="formButton">Raum Erstellen</div>       
+
+  </div>
+</script>
+
+<script id="roomOverviewTmpl" type="text/html">	
+	<div id="roomOverViewRoomDetails">
+	  <div id="roomOverViewPlayerCount"><strong>{{ playerCount }}</strong><strong>/{{ maxPlayers }}</strong> Spieler</div>
+	  <div><strong>{{ deckType }}er</strong> Deck</div>
+	  <div><strong>{{ reactionTime }}</strong> Sek. Reaktionszeit</div>
+	  <div id="roomOverViewLock"><span><img src="/images/unlock.png" /> Offen</span><span><img src="/images/lock.png" /> Geschlossen</span></div>
+	</div>
+</script>
+
+<script id="roomPlayerTmpl" type="text/html">	
+	<div class="listRow" id="roomPlayersPlayer{{ id }}">
+	  <div class="listRowIcon"><img src="{{ icon }}" height="25px" /></div>
+	  <div class="listRowTitle">{{ name }}<input type="hidden" class="roomPlayerHiddenId" value="{{ id }}" /></div>
+	  <div class="listRowColumn1">314 Siege</div>
+	  <div class="listRowColumn2">
+	  </div>
+	  <div class="clearer"></div>
+	</div>
+</script>
+
+<script id="roomPlayerAdminOptionsTmpl" type="text/html">	
+	<span class="roomPlayerLnk"><img src="/images/kickuser.png" title="Rausschmeissen" alt="Rausschmeissen" /></span>
+
+</script>
+
+<script id="roomChatMessageTmpl" type="text/html">	
+	<div class="listRowSmall">
+	
+	  <div class="listSmallIcon"><img src="{{ icon }}" height="20px" /></div>
+	  <div class="listSmallText"><strong>{{ name }}</strong> ({{ time }}): {{ msg }}</div>
+	
+	</div>
+	<div class="clearer"></div>
+</script>
+
+<script id="roomPlayerKickConfirmTmpl" type="text/html">
+	<div class="roomPlayerKickConfirm">
+		<div class="roomPlayerKickConfirmForm">
+			<div class="roomPlayerKickConfirmInput"><input type="checkbox" /> </div>
+			<div class="roomPlayerKickConfirmLabel">Hausverbot?</div>
+		</div>
+		<div class="roomPlayerKickConfirmFormBtn">Rausschmeissen</div>
+	</div>
+</script>
+
+<script id="roomTmpl" type="text/html">	
+  <div id="roomView"> 
+
+    <div class="tabs">
+
+      <div class="tab tabOverview">
+
+        <div class="tabTitle">{{ name }}</div>
+
+        <div class="tabContent">
+
+
+
+
+
+          <div id="menu2" class="roomviewmenu2">
+            <ul>
+              <li id="menu2StartGame">Spiel starten</li>
+              
+              <li id="roommenuLeave">Raum verlassen</li>
+              <li id="roommenuClose"><p>Raum abschließen</p><p>Raum aufschließen</p></li>
+              <li id="menu2InviteFriends">Freunde einladen</li> 
+            </ul>
+            <div class="clearer"></div>
+          </div>
+
+        </div>
+      </div>   
+      <div class="tab tabPlayer">
+        <div class="tabTitle">Spieler</div>
+        <div class="tabContent">
+
+
+
+          <div class="listCtrl">
+
+
+          </div>
+        <div class="roomAd1"><img src="http://dummyimage.com/250x250/ccc/fff.png&text=Ad" /></div>
+        </div>
+      </div>   
+      <div class="tab tabChat">
+        <div class="tabTitle">Chat</div>
+
+        <div class="tabContent">
+
+          <div class="listCtrlSmall">
+
+      
+          </div>
+
+          <div class="rowChatTextinput">
+            <div class="chatinputdiv">
+              <input type="text" class="chatTextinput" value=""  maxlength="500" />
+              
+            </div>
+            
+            
+          </div>  
+          
+
+        </div>
+
+      </div>   
+
+    </div>
+    <div class="clearer"></div>
+
+</script>
+
+<script id="gameTmpl" type="text/html">
+	<div id="canvasdiv">
+		<canvas height="600" width="1024" id="canvas_1"></canvas>
+	</div>
+</script>
+
+<!--  
+	
+	
+
+  <div id="footer"></div>-->
+
+
+</body> 
+</html> 

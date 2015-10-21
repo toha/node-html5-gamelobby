@@ -1,0 +1,42 @@
+var MauMauQuickGameView = Backbone.View.extend({
+    events: {
+      "click .opponentcount .formSwitchButtons": "onOpponentCountClick",
+      "click .reactiontime .formSwitchButtons": "onReactiontimeClick"
+    },
+    initialize: function() {
+      _.bindAll(this, "render");
+    },
+    render: function() {   
+      $(this.el).html(ich.quickgameViewTmpl());        
+      return this;
+    },
+    firstRender: function() {
+      var self = this;
+      this.render();
+      
+      /*self.$(".formSwitchButtons").click(function() {
+        $(this).addClass("formValueSwitchButtonsActive");
+      })*/
+
+
+      $("#gameview").append(this.el);
+      
+      return self;
+    },
+    onOpponentCountClick: function(e) {
+      $(".formValueSwitchButtonsActive", this.$(e.target).parent()).removeClass("formValueSwitchButtonsActive");
+      this.$(e.target).addClass("formValueSwitchButtonsActive");
+      this.model.set({
+        opponents: this.$(e.target).text()
+      });
+      
+    },
+    onReactiontimeClick: function(e) {
+      $(".formValueSwitchButtonsActive", this.$(e.target).parent()).removeClass("formValueSwitchButtonsActive");
+      this.$(e.target).addClass("formValueSwitchButtonsActive");
+      this.model.set({
+        reactiontime: this.$(e.target).text()
+      });
+      
+    }
+});

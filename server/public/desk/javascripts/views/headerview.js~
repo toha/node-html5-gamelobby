@@ -1,0 +1,19 @@
+var HeaderView = Backbone.View.extend({
+    events: {
+    },
+    initialize: function() {
+
+    },
+    render: function() {   
+
+        return this;
+    },
+    firstRender: function() {
+        var self = this;
+        
+        this.el = ich.headerTmpl();
+        $("body").append(this.el);
+        
+        return this;
+    }
+});

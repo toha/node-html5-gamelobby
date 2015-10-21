@@ -1,0 +1,64 @@
+var MauMauView = Backbone.View.extend({
+    events: {
+
+    },
+    initialize: function() {
+      _.bindAll(this, "render");
+    },
+    render: function() {   
+
+        return this;
+    },
+    firstRender: function() {
+        var self = this;
+        
+        self.el = ich.maumauView();
+        $("#gameview").append(self.el);
+
+
+        /*$("span", "#headerGameTitle").html("MauMau");
+        $("span", "#headerGameTitle").click(function() {
+          
+          if ($("span", "#headerGameTitle").hasClass("headerGameTitleActive")) {
+            $("span", "#headerGameTitle").removeClass("headerGameTitleActive");
+          }
+          else {
+            $("span", "#headerGameTitle").addClass("headerGameTitleActive");
+          }
+          
+          // calc menu position
+          var offset = $("span", "#headerGameTitle").offset();
+          var h = $("span", "#headerGameTitle").innerHeight();
+          var w = $("span", "#headerGameTitle").innerWidth();
+
+          $("#menu").css("top", offset.top+h);
+          $("#menu").css("left", offset.left);
+          $("ul", "#menu").css("width", w);
+          $("#menu").toggle();
+        });*/
+        $("#quickMatchLnk", self.el).click(function() {
+      
+          self.navigate(self, this, "games/maumau/quickgame");
+        });
+
+        $("#frontPageLnk", self.el).click(function() {
+          self.navigate(self, this, "games/maumau");
+        });    
+
+        $("#createRoomLnk", self.el).click(function() {
+          self.navigate(self, this, "games/maumau");
+        }); 
+
+    
+        
+        return self;
+    },
+    navigate: function(view, element, url) {
+      
+      app.navigate(url, true);
+
+      //$("span", "#headerGameTitle").removeClass("headerGameTitleActive");
+      //$("#menu").toggle();
+      //$(element).removeClass("menuliActive");
+    }
+});

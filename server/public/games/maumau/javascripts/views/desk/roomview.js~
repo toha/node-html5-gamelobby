@@ -1,0 +1,48 @@
+var RoomView = Backbone.View.extend({
+    events: {
+      "click .tabOverview ": "showOverviewTab",
+      "click .tabPlayer ": "showPlayerTab",
+      "click .tabChat ": "showChatTab" ,
+      "click #roommenuLeave": "leaveRoom"
+    },
+    initialize: function() {
+      _.bindAll(this, "render");
+    },
+    render: function() {   
+      $(this.el).html(ich.roomTmpl());        
+      return this;
+    },
+    firstRender: function() {
+      var self = this;
+      this.render();
+
+
+
+      $("#gameview").append(this.el);
+
+      
+      return self;
+    },
+    showOverviewTab: function(e) {
+      this.$(".tabContent").hide();
+      this.$(".tabContent").eq(0).show();
+      this.$(".tab").removeClass("tabActive");
+      this.$(".tabOverview").addClass("tabActive");
+      this.$(".tabChat").parent().removeClass("tabActive");
+      app.navigate("games/maumau/room/bla", true); 
+      
+    },
+    showPlayerTab: function(e) {
+      app.navigate("games/maumau/room/bla/player", true); 
+      
+    },
+    showChatTab: function(e) {
+      app.navigate("games/maumau/room/bla/chat", true); 
+
+    },
+    leaveRoom: function() {
+
+       app.navigate("games/maumau/rooms", true);
+
+    }
+});

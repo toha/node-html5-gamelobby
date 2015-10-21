@@ -1,0 +1,22 @@
+talk
+ - POST-Btn funzt nicht (nur mit Enter)
+ - Die Liste kann schnell sehr sehr lang werden oder?
+
+event-ansicht
+ - Wenn ich auf "+ich :)" klicke und keine Avatar habe (oder es mein Avatar nicht auf dem Server gibt, wird darunter nichtsanzeigt (da wo die leute sind die am start sind)
+
+
+
+Avatar:
+ - Bei jpg und png:
+  Fehler: Datei nicht gefunden
+  Die Dateien unter https://earlybiyrd.dyndns.org:3000/files/avatar konnten nicht gefunden werden.
+ - Am besten ne Fehlermeldung bei falschem Dateitypen
+
+event-erstellen
+ - Löschen-Btn macht nichts
+ - Wenn ich ein Event erstelle, dass z.b. am 30.11. ist dann wird mir das nicht in der liste angezeigt und es gibt kein hinweis dass das event angelegt wurde (Im calendar isses)
+ - 
+
+Event-Ansicht
+ - Man muss zwingend immer auf POST klicken um einen Kommentar abzugeben, weil Tab-Reihenfolge nicht stimmt 
